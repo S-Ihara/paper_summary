@@ -6,3 +6,7 @@ LLMに論文を要約させるやつ
 - 設定ファイル
     - `mv config_template.py config.py`
     - してconfigの中にAPIのKEYを設定する
+
+- 実行
+    - ./papers/pdf/* に要約したいpdfのファイルを置いておく
+    - main.pyで要約ファイルが./paeprs/markdown/* に作成される

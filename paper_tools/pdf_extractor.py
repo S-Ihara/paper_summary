@@ -36,7 +36,29 @@ Analyze the following academic paper text and extract its sections into a JSON f
     * The `id` key should be a string representing the section number (e.g., "1", "2.1"). For sections without a number, like "Abstract," assign a logical ID (e.g., "0" for "Abstract" and "1" for "Introduction").
     * The `title` key should contain the section title as a string (e.g., "Abstract," "Introduction").
     * The `content` key should contain the plain text body of the section. Do not use Markdown or any other formatting within this text.
-4.  **Important Note**: The content for `id` "0" should be the "Abstract" and the content for `id` "1" should be the "Introduction."
+4.  **Important Note**: The content for `id` "0" should be the "Abstract"."
+5.  **Quotation Mark Escaping**: When generating the JSON output, ensure all quotation marks inside the content value are escaped strictly according to JSON syntax.
+    * Use a backslash followed by a half-width double quote (\").
+    * Do not use full-width smart quotes (“, ”) or any other non-standard quotation marks.
+    * Apply escaping consistently for all quotation marks in the content.
+    * The final output must be valid JSON without syntax errors.
+
+# output format
+{
+  "sections": [
+    {
+      "id": "0",
+      "title": "Abstract",
+      "content": "..."
+    },
+    {
+      "id": "1",
+      "title": "Introduction",
+      "content": "..."
+    },
+    ...
+  ]
+}
 """
         response = self.client.models.generate_content(
             model=self.model,

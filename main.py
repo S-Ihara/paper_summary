@@ -36,6 +36,8 @@ def main():
         if not (md_directory / (pdf_path.stem + ".md")).exists():
             paper_summarizer.simple_summary(text_path, save_directory=md_directory, save=True)
             logger.info(f"{md_directory}に{pdf_path.stem}の要約を保存しました")
+        else:
+            logger.info("すでに要約があるみたいです")
     
     logger.info("完了")
 

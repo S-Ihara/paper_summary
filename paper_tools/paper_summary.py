@@ -34,7 +34,12 @@ class PaperSummarizer:
         """
         with text_path.open("r", encoding="utf-8") as f:
             text = f.read()
-        data = json.loads(text)
+        
+        try:
+            data = json.loads(text)
+        except json.decoder.JSONDecodeError:
+            text = text.replace("\\", "\\\\")
+            data = json.loads(text)
 
         paper_content = ""
         for section in data["sections"]:

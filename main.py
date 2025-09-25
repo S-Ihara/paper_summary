@@ -28,7 +28,7 @@ def main():
         logger.info(f"{pdf_path.stem}の要約を作ります")
         # textの抽出
         if not (text_directory / (pdf_path.stem + ".txt")).exists():
-            pdf_extractor.extract2(pdf_path, save_directory=text_directory, save=True)
+            pdf_extractor.extract(pdf_path, save_directory=text_directory, save=True)
             logger.info(f"{text_directory}に{pdf_path.stem}のtextを保存しました")
 
         # 要約の作成

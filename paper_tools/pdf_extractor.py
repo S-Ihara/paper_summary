@@ -85,12 +85,12 @@ Analyze the following academic paper text and extract its sections into an XML f
             file(google.genai.types.File)
         """
         file = self.client.files.upload(file=pdf_path)
-        file_id = file.name.split("/")[-1]
+        file_name = file.name
         logger.info(f"Uploading: {file.uri}")
         status = file.state
         while status != "ACTIVE":
             logger.debug(f"ファイルの元状態: {status}、完了まで待ちます")
-            file = self.client.files.get(file_id=file_id)
+            file = self.client.files.get(file_name=file_name)
             status = file.state
             time.sleep(3)
         logger.info("アップロード完了")

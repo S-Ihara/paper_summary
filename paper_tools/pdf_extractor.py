@@ -85,6 +85,8 @@ Analyze the following academic paper text and extract its sections into an XML f
         """
         file = self.client.files.upload(file=pdf_path)
         logger.info(f"Uploaded: {file.uri}")
+        file_metadata = self.client.files.get(file_id=file.id)
+        logger.info(f"現在のファイルのステータス：{file_metadata.state}")
 
         return file
 

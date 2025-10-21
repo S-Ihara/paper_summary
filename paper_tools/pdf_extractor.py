@@ -1,3 +1,4 @@
+import time
 import re
 import json
 from pathlib import Path
@@ -84,9 +85,15 @@ Analyze the following academic paper text and extract its sections into an XML f
             file(google.genai.types.File)
         """
         file = self.client.files.upload(file=pdf_path)
-        logger.info(f"Uploaded: {file.uri}")
-        file_metadata = self.client.files.get(file_id=file.id)
-        logger.info(f"現在のファイルのステータス：{file_metadata.state}")
+        file_id = file.name.split("/")[-1]
+        logger.info(f"Uploading: {file.uri}")
+        status = file.state
+        while status != "ACTIVE":
+            logger.debug(f"ファイルの元状態: {status}、完了まで待ちます")
+            file = self.client.files.get(file_id=file_id)
+            status = file.state
+            time.sleep(3)
+        logger.info("アップロード完了")
 
         return file
 

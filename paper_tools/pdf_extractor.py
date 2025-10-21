@@ -90,7 +90,7 @@ Analyze the following academic paper text and extract its sections into an XML f
         status = file.state
         while status != "ACTIVE":
             logger.debug(f"ファイルの元状態: {status}、完了まで待ちます")
-            file = self.client.files.get(file_name=file_name)
+            file = self.client.files.get(name=file_name)
             status = file.state
             time.sleep(3)
         logger.info("アップロード完了")

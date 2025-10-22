@@ -30,7 +30,7 @@ def main():
 
     summary_count = 0
     for pdf_path in pdf_directory.glob("*.pdf"):
-        logger.info(f"{pdf_path.stem}の要約を作ります")
+        logger.debug(f"{pdf_path.stem}の要約を作ります")
         # textの抽出
         if not (text_directory / (pdf_path.stem + ".txt")).exists():
             while True:

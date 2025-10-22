@@ -56,6 +56,7 @@ Analyze the following academic paper text and extract its sections into an XML f
     </section>
 </sections>
 """
+        logger.debug(file)
         response = self.client.models.generate_content(
             model=self.model,
             contents=[

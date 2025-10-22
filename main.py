@@ -36,6 +36,7 @@ def main():
             while True:
                 try:
                     pdf_extractor.extract(pdf_path, save_directory=text_directory, save=True)
+                    logger.info(f"{text_directory}に{pdf_path.stem}のtextを保存しました")
                     break
                 except Exception as e:
                     logger.error(f"エラーが発生しました: {e}")
@@ -45,7 +46,6 @@ def main():
                     logger.error("その他のエラーです。5秒後に再試行します")
                     time.sleep(5)
                     continue
-            logger.info(f"{text_directory}に{pdf_path.stem}のtextを保存しました")
 
         # 要約の作成
         text_path = text_directory / (pdf_path.stem + ".txt")
@@ -53,12 +53,15 @@ def main():
             while True:
                 try:
                     paper_summarizer.simple_summary(text_path, save_directory=md_directory, save=True)
+                    logger.info(f"{md_directory}に{pdf_path.stem}の要約を保存しました")
+                    break
+                except FileNotFoundError:
+                    logger.warning("ファイルが見つかりませんでした。ここでテキスト抽出をとりあえず飛ばしている可能性が高いので一旦スキップさせます。")
                     break
                 except Exception as e:
                     logger.error(f"エラーが発生しました: {e}、5秒後に再試行します")
                     time.sleep(5)
                     continue
-            logger.info(f"{md_directory}に{pdf_path.stem}の要約を保存しました")
             summary_count += 1
         else:
             logger.debug("すでに要約があるみたいです")

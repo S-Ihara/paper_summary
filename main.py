@@ -38,9 +38,12 @@ def main():
                     pdf_extractor.extract(pdf_path, save_directory=text_directory, save=True)
                     break
                 except Exception as e:
-                    logger.error(f"エラーが発生しました: {e}、5秒後に再試行します")
+                    logger.error(f"エラーが発生しました: {e}")
+                    if e.response.status_code == 400:
+                        logger.error("invalud argumentらしいですが、よくわかっていないです。再開させてもうまくいかないのでスキップします。")
+                        break
+                    logger.error("その他のエラーです。5秒後に再試行します")
                     time.sleep(5)
-                    import pdb; pdb.set_trace()
                     continue
             logger.info(f"{text_directory}に{pdf_path.stem}のtextを保存しました")
 

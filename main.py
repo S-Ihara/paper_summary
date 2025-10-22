@@ -1,4 +1,6 @@
+import sys
 from pathlib import Path
+import time
 
 from loguru import logger
 
@@ -24,22 +26,46 @@ def main():
     pdf_extractor = PDFExtractor(api_key=API_KEY)
     paper_summarizer = PaperSummarizer(api_key=API_KEY)
 
+    MAX_SUMMARY_PAPERS = 10
+
+    summary_count = 0
     for pdf_path in pdf_directory.glob("*.pdf"):
         logger.info(f"{pdf_path.stem}の要約を作ります")
         # textの抽出
         if not (text_directory / (pdf_path.stem + ".txt")).exists():
-            pdf_extractor.extract(pdf_path, save_directory=text_directory, save=True)
+            while True:
+                try:
+                    pdf_extractor.extract(pdf_path, save_directory=text_directory, save=True)
+                    break
+                except Exception as e:
+                    logger.error(f"エラーが発生しました: {e}、5秒後に再試行します")
+                    time.sleep(5)
+                    continue
             logger.info(f"{text_directory}に{pdf_path.stem}のtextを保存しました")
 
         # 要約の作成
         text_path = text_directory / (pdf_path.stem + ".txt")
         if not (md_directory / (pdf_path.stem + ".md")).exists():
-            paper_summarizer.simple_summary(text_path, save_directory=md_directory, save=True)
+            while True:
+                try:
+                    paper_summarizer.simple_summary(text_path, save_directory=md_directory, save=True)
+                    break
+                except Exception as e:
+                    logger.error(f"エラーが発生しました: {e}、5秒後に再試行します")
+                    time.sleep(5)
+                    continue
             logger.info(f"{md_directory}に{pdf_path.stem}の要約を保存しました")
+            summary_count += 1
         else:
-            logger.info("すでに要約があるみたいです")
-    
-    logger.info("完了")
+            logger.debug("すでに要約があるみたいです")
+
+        if summary_count >= MAX_SUMMARY_PAPERS:
+            logger.info("最大要約数に達したので終了します")
+            break
+
+    logger.info("終了しました")
 
 if __name__ == "__main__":
+    logger.remove()
+    logger.add(sys.stdout, level="INFO")
     main()

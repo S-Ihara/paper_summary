@@ -40,6 +40,7 @@ def main():
                 except Exception as e:
                     logger.error(f"エラーが発生しました: {e}、5秒後に再試行します")
                     time.sleep(5)
+                    import pdb; pdb.set_trace()
                     continue
             logger.info(f"{text_directory}に{pdf_path.stem}のtextを保存しました")
 

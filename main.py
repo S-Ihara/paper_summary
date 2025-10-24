@@ -38,11 +38,19 @@ def main():
                     pdf_extractor.extract(pdf_path, save_directory=text_directory, save=True)
                     logger.info(f"{text_directory}に{pdf_path.stem}のtextを保存しました")
                     break
+                except RuntimeError:
+                    logger.debug("おそらくxmlのパースに失敗")
+                    logger.error("5秒後に再試行します")
+                    time.sleep(5)
+                    continue
                 except Exception as e:
                     logger.error(f"エラーが発生しました: {e}")
                     if e.response.status_code == 400:
                         logger.error("invalud argumentらしいですが、よくわかっていないです。再開させてもうまくいかないのでスキップします。")
                         break
+                    elif e.response.status_code == 429:
+                        logger.error("レートリミットに引っ掛かりました。終了します。")
+                        sys.exit(1)
                     logger.error("その他のエラーです。5秒後に再試行します")
                     time.sleep(5)
                     continue

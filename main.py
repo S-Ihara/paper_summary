@@ -67,7 +67,11 @@ def main():
                     logger.warning("ファイルが見つかりませんでした。ここでテキスト抽出をとりあえず飛ばしている可能性が高いので一旦スキップさせます。")
                     break
                 except Exception as e:
-                    logger.error(f"エラーが発生しました: {e}、5秒後に再試行します")
+                    logger.error(f"エラーが発生しました: {e}")
+                    if e.response.status_code == 429:
+                        logger.error("レートリミットに引っ掛かりました。終了します。")
+                        sys.exit(1)
+                    logger.error("その他のエラーです。5秒後に再試行します")
                     time.sleep(5)
                     continue
             summary_count += 1

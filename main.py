@@ -3,6 +3,7 @@ from pathlib import Path
 import time
 
 from loguru import logger
+from google.genai.errors import APIError
 
 from paper_tools.pdf_extractor import PDFExtractor
 from paper_tools.paper_summary import PaperSummarizer
@@ -43,7 +44,7 @@ def main():
                     logger.error("5秒後に再試行します")
                     time.sleep(5)
                     continue
-                except Exception as e:
+                except APIError as e:
                     logger.error(f"エラーが発生しました: {e}")
                     if e.response.status_code == 400:
                         logger.error("invalud argumentらしいですが、よくわかっていないです。再開させてもうまくいかないのでスキップします。")
@@ -51,9 +52,13 @@ def main():
                     elif e.response.status_code == 429:
                         logger.error("レートリミットに引っ掛かりました。終了します。")
                         sys.exit(1)
-                    logger.error("その他のエラーです。5秒後に再試行します")
-                    time.sleep(5)
-                    continue
+                    else:
+                        logger.error("その他のエラーです。5秒後に再試行します")
+                        time.sleep(5)
+                        continue
+                except Exception as e:
+                    logger.error(f"エラーが発生しました: {e}")
+                    raise
 
         # 要約の作成
         text_path = text_directory / (pdf_path.stem + ".txt")

@@ -1,0 +1,4 @@
+google-genai
+loguru
+beautifulsoup4
+requests
